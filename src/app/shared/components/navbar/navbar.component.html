@@ -1,0 +1,26 @@
+<div class="navbar-container">
+    <p-menubar [model]="items">
+        <ng-template pTemplate="start">
+            <div class="logo-container">
+                <img src="assets/images/logo.png" alt="GameRecs Logo" height="40" class="mr-2">
+                <span class="logo-text">GameRecs</span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="end">
+            <div class="auth-buttons">
+                <p-button 
+                    label="Login" 
+                    icon="pi pi-sign-in" 
+                    (onClick)="onLogin()"
+                    styleClass="p-button-text mr-2">
+                </p-button>
+                <p-button 
+                    label="Register" 
+                    icon="pi pi-user-plus" 
+                    (onClick)="onRegister()"
+                    styleClass="p-button-primary">
+                </p-button>
+            </div>
+        </ng-template>
+    </p-menubar>
+</div>

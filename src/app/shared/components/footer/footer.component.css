@@ -1,0 +1,45 @@
+/* Custom animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+footer {
+    animation: fadeIn 0.8s ease-out;
+}
+
+/* Hover effects for social icons */
+.social-icon {
+    transition: transform 0.2s ease;
+}
+
+.social-icon:hover {
+    transform: translateY(-2px);
+}
+
+/* Newsletter input focus styles */
+input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Responsive grid adjustments */
+@media screen and (max-width: 768px) {
+    .grid {
+        gap: 2rem;
+    }
+    
+    .col-span-1 {
+        text-align: center;
+    }
+    
+    .flex.gap-4 {
+        justify-content: center;
+    }
+}

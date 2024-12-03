@@ -1,13 +1,13 @@
-<main class="p-4">
-  <h1>Hello, {{ title }}</h1>
-  
-  <!-- PrimeNG Button Examples -->
-  <div class="flex gap-2 mt-4">
-    <p-button label="Basic"></p-button>
-    <p-button label="Click Me" severity="success" (onClick)="handleClick()"></p-button>
-    <p-button label="Disabled" [disabled]="true"></p-button>
-    <p-button label="With Icon" icon="pi pi-check"></p-button>
-  </div>
+<!-- Main App Container -->
+<div class="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+    <!-- Navigation -->
+    <app-navbar></app-navbar>
 
-  <router-outlet />
-</main>
+    <!-- Main Content -->
+    <main class="flex-grow">
+        <router-outlet></router-outlet>
+    </main>
+
+    <!-- Footer -->
+    <app-footer></app-footer>
+</div>
