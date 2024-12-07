@@ -7,4 +7,14 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'gamerecs-frontend';
+  
+  //test of primeng
+  text = '';
+
+  msg = '';
+
+  onClick() {
+    this.msg = 'Welcome ' + this.text;
+  }
+  //end of test of primeng
 }
