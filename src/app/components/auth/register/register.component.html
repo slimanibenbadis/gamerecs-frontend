@@ -1,0 +1,126 @@
+<div class="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div class="w-full max-w-md space-y-8">
+    <!-- Header -->
+    <div>
+      <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+        Create your account
+      </h2>
+      <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+        Join GameRecs today and discover your next favorite game
+      </p>
+    </div>
+
+    <!-- Registration Form -->
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="mt-8 space-y-6">
+      <!-- Username Field -->
+      <div>
+        <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
+        <div class="mt-1 relative">
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500"></i>
+            <input 
+              pInputText 
+              id="username"
+              type="text"
+              formControlName="username"
+              [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('username')}"
+              class="w-full pl-10 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+              placeholder="Choose a username"
+            />
+          </span>
+        </div>
+        <small class="text-red-500 dark:text-red-400" *ngIf="isFieldInvalid('username')">
+          {{ getErrorMessage('username') }}
+        </small>
+      </div>
+
+      <!-- Email Field -->
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email address</label>
+        <div class="mt-1 relative">
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500"></i>
+            <input 
+              pInputText 
+              id="email"
+              type="email"
+              formControlName="email"
+              [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('email')}"
+              class="w-full pl-10 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+              placeholder="Enter your email"
+            />
+          </span>
+        </div>
+        <small class="text-red-500 dark:text-red-400" *ngIf="isFieldInvalid('email')">
+          {{ getErrorMessage('email') }}
+        </small>
+      </div>
+
+      <!-- Password Field -->
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Password</label>
+        <div class="mt-1">
+          <p-password
+            id="password"
+            formControlName="password"
+            [toggleMask]="true"
+            [feedback]="true"
+            [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('password')}"
+            styleClass="w-full"
+            inputStyleClass="w-full dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            placeholder="Create a strong password"
+            [inputStyle]="{'width': '100%'}"
+          ></p-password>
+        </div>
+        <small class="text-red-500" *ngIf="isFieldInvalid('password')">
+          {{ getErrorMessage('password') }}
+        </small>
+      </div>
+
+      <!-- Confirm Password Field -->
+      <div>
+        <label for="confirmPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Confirm Password</label>
+        <div class="mt-1">
+          <p-password
+            id="confirmPassword"
+            formControlName="confirmPassword"
+            [toggleMask]="true"
+            [feedback]="false"
+            [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('confirmPassword')}"
+            styleClass="w-full"
+            inputStyleClass="w-full dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            placeholder="Confirm your password"
+            [inputStyle]="{'width': '100%'}"
+          ></p-password>
+        </div>
+        <small class="text-red-500" *ngIf="isFieldInvalid('confirmPassword')">
+          {{ getErrorMessage('confirmPassword') }}
+        </small>
+      </div>
+
+      <!-- Submit Button -->
+      <div>
+        <p-button
+          type="submit"
+          [loading]="loading"
+          styleClass="w-full"
+          label="Create Account"
+          [disabled]="registerForm.invalid || loading"
+        ></p-button>
+      </div>
+    </form>
+
+    <!-- Sign In Link -->
+    <div class="text-center">
+      <p class="text-sm text-gray-600 dark:text-gray-300">
+        Already have an account?
+        <a routerLink="/auth/login" class="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
+          Sign in
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Toast for notifications -->
+<p-toast></p-toast>

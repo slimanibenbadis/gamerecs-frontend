@@ -1,3 +1,5 @@
+@import "primeicons/primeicons.css";
+
 @layer tailwind-base, primeng, tailwind-utilities;
 
 @layer tailwind-base {
@@ -7,4 +9,39 @@
 @layer tailwind-utilities {
 @tailwind components;
 @tailwind utilities;
+}
+
+/* Dark mode styles for PrimeNG components */
+:root {
+  color-scheme: light dark;
+}
+
+.dark {
+  /* Card styles */
+  .p-card {
+    @apply bg-gray-800 text-gray-100;
+  }
+  
+  .p-card-title {
+    @apply text-gray-100;
+  }
+
+  /* Input styles */
+  .p-inputtext {
+    @apply bg-gray-700 text-gray-100 border-gray-600;
+  }
+
+  .p-inputtext:enabled:focus {
+    @apply border-blue-400;
+  }
+
+  /* Button styles */
+  .p-button.p-button-primary {
+    @apply bg-blue-600 border-blue-600 hover:bg-blue-700 hover:border-blue-700;
+  }
+}
+
+/* Theme switch styling */
+.p-toggleswitch.p-toggleswitch-checked .p-toggleswitch-slider {
+  @apply bg-blue-600;
 }
