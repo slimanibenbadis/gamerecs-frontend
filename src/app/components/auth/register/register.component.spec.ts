@@ -7,6 +7,8 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ToastModule } from 'primeng/toast';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AuthNavComponent } from '../auth-nav/auth-nav.component';
 import { environment } from '../../../../environments/environment';
 
 describe('RegisterComponent', () => {
@@ -17,10 +19,14 @@ describe('RegisterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [RegisterComponent],
+      declarations: [
+        RegisterComponent,
+        AuthNavComponent
+      ],
       imports: [
         ReactiveFormsModule,
         HttpClientTestingModule,
+        RouterTestingModule,
         ButtonModule,
         InputTextModule,
         PasswordModule,

@@ -17,13 +17,14 @@ import { MessageService } from 'primeng/api';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 
 import { AppRoutingModule } from './app-routing.module';
+import { AuthModule } from './components/auth/auth.module';
 import { AppComponent } from './app.component';
-import { RegisterComponent } from './components/auth/register/register.component';
+import { HomeComponent } from './components/home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    RegisterComponent
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +38,8 @@ import { RegisterComponent } from './components/auth/register/register.component
     PasswordModule,
     ToastModule,
     MessageModule,
-    ToggleButtonModule
+    ToggleButtonModule,
+    AuthModule
   ],
   providers: [
     provideClientHydration(),
@@ -45,14 +47,14 @@ import { RegisterComponent } from './components/auth/register/register.component
     provideHttpClient(withFetch()),
     providePrimeNG({
       theme: {
-          preset: Aura,
-          options: {
-            ripple: true,
-            cssLayer: {
-              name: 'primeng',
-              order: 'tailwind-base, primeng, tailwind-utilities'
-            }
+        preset: Aura,
+        options: {
+          ripple: true,
+          cssLayer: {
+            name: 'primeng',
+            order: 'tailwind-base, primeng, tailwind-utilities'
           }
+        }
       }
     }),
     MessageService

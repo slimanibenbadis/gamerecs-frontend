@@ -1,0 +1,76 @@
+<div class="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div class="w-full max-w-md space-y-8">
+    <app-auth-nav></app-auth-nav>
+    <!-- Header -->
+    <div>
+      <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+        Sign in to your account
+      </h2>
+      <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+        Welcome back to GameRecs
+      </p>
+    </div>
+
+    <!-- Login Form -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="mt-8 space-y-6" aria-label="Login form">
+      <!-- Username Field -->
+      <div>
+        <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
+        <div class="mt-1 relative">
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500"></i>
+            <input 
+              pInputText 
+              id="username"
+              type="text"
+              formControlName="username"
+              [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('username')}"
+              class="w-full pl-10 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+              placeholder="Enter your username"
+              aria-describedby="username-error"
+            />
+          </span>
+        </div>
+        <small id="username-error" class="text-red-500 dark:text-red-400" *ngIf="isFieldInvalid('username')">
+          {{ getErrorMessage('username') }}
+        </small>
+      </div>
+
+      <!-- Password Field -->
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Password</label>
+        <div class="mt-1">
+          <p-password
+            id="password"
+            formControlName="password"
+            [toggleMask]="true"
+            [feedback]="false"
+            [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('password')}"
+            styleClass="w-full"
+            inputStyleClass="w-full dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            placeholder="Enter your password"
+            [inputStyle]="{'width': '100%'}"
+            aria-describedby="password-error"
+          ></p-password>
+        </div>
+        <small class="text-red-500" *ngIf="isFieldInvalid('password')">
+          {{ getErrorMessage('password') }}
+        </small>
+      </div>
+
+      <!-- Submit Button -->
+      <div>
+        <p-button
+          type="submit"
+          [loading]="loading"
+          styleClass="w-full"
+          label="Sign in"
+          [disabled]="loginForm.invalid || loading"
+        ></p-button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Toast for notifications -->
+<p-toast></p-toast>

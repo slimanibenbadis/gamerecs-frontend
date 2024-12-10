@@ -1,0 +1,15 @@
+<div class="flex justify-center space-x-4 mb-8">
+  <button 
+    pButton 
+    [ngClass]="{'p-button-outlined': !isLoginRoute()}"
+    label="Sign In" 
+    routerLink="/auth/login"
+  ></button>
+  <button 
+    pButton 
+    [ngClass]="{'p-button-outlined': isLoginRoute()}"
+    label="Create Account" 
+    styleClass="p-button-secondary" 
+    [routerLink]="['/register']"
+  ></button>
+</div> 
