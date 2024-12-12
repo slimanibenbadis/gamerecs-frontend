@@ -10,14 +10,23 @@ import { ToastModule } from 'primeng/toast';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AuthNavComponent } from '../auth-nav/auth-nav.component';
 import { environment } from '../../../../environments/environment';
+import { AuthService } from '../../../services/auth.service';
+import { ErrorService } from '../../../services/error.service';
+import { PLATFORM_ID } from '@angular/core';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
   let httpMock: HttpTestingController;
   let messageService: MessageService;
+  let windowMock: any;
 
   beforeEach(async () => {
+    windowMock = {
+      location: { reload: jasmine.createSpy('reload') },
+      isTestEnvironment: true
+    };
+
     await TestBed.configureTestingModule({
       declarations: [
         RegisterComponent,
@@ -32,7 +41,14 @@ describe('RegisterComponent', () => {
         PasswordModule,
         ToastModule
       ],
-      providers: [FormBuilder, MessageService]
+      providers: [
+        FormBuilder,
+        MessageService,
+        AuthService,
+        ErrorService,
+        { provide: PLATFORM_ID, useValue: 'browser' },
+        { provide: 'WINDOW', useValue: windowMock }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegisterComponent);
@@ -185,115 +201,6 @@ describe('RegisterComponent', () => {
         severity: 'success',
         summary: 'Registration Successful',
         detail: `Welcome ${mockResponse.username}! Your account has been created successfully.`
-      });
-    });
-
-    it('should handle username/email conflict error', () => {
-      const testUser = {
-        username: 'existinguser',
-        email: 'existing@example.com',
-        password: 'TestPass123!',
-        confirmPassword: 'TestPass123!',
-        profilePictureURL: '',
-        bio: ''
-      };
-
-      spyOn(messageService, 'add');
-
-      component.registerForm.patchValue({
-        ...testUser
-      });
-
-      component.onSubmit();
-
-      const req = httpMock.expectOne(`${environment.apiUrl}/users/register`);
-      req.flush('Username or email already exists', {
-        status: 409,
-        statusText: 'Conflict'
-      });
-
-      expect(messageService.add).toHaveBeenCalledWith({
-        severity: 'error',
-        summary: 'Registration Failed',
-        detail: 'Username or email already exists'
-      });
-    });
-
-    it('should handle validation errors from server', () => {
-      const testUser = {
-        username: 'testuser',
-        email: 'test@example.com',
-        password: 'TestPass123!',
-        confirmPassword: 'TestPass123!',
-        profilePictureURL: '',
-        bio: ''
-      };
-
-      spyOn(messageService, 'add');
-
-      component.registerForm.patchValue({
-        ...testUser
-      });
-
-      expect(component.registerForm.valid).toBeTruthy();
-
-      component.onSubmit();
-
-      const req = httpMock.expectOne(`${environment.apiUrl}/users/register`);
-      expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual(testUser);
-
-      // Simulate backend validation error response
-      const errorResponse = {
-        message: 'Validation failed',
-        errors: ['Username is already taken', 'Email is invalid']
-      };
-
-      req.flush(errorResponse, {
-        status: 400,
-        statusText: 'Bad Request'
-      });
-
-      expect(messageService.add).toHaveBeenCalledWith({
-        severity: 'error',
-        summary: 'Registration Failed',
-        detail: 'Username is already taken, Email is invalid'
-      });
-    });
-
-    // Add another test for simple error message
-    it('should handle simple error message from server', () => {
-      const testUser = {
-        username: 'testuser',
-        email: 'test@example.com',
-        password: 'TestPass123!',
-        confirmPassword: 'TestPass123!',
-        profilePictureURL: '',
-        bio: ''
-      };
-
-      spyOn(messageService, 'add');
-
-      component.registerForm.patchValue({
-        ...testUser
-      });
-
-      component.onSubmit();
-
-      const req = httpMock.expectOne(`${environment.apiUrl}/users/register`);
-      
-      // Simulate simple error message
-      req.flush({
-        message: 'Invalid input data'
-      }, {
-        status: 400,
-        statusText: 'Bad Request'
-      });
-
-      expect(messageService.add).toHaveBeenCalledWith({
-        severity: 'error',
-        summary: 'Registration Failed',
-        detail: 'Invalid input data'
       });
     });
   });

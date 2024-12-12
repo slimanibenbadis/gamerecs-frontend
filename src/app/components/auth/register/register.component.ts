@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
-import { environment } from '../../../../environments/environment';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 
 interface RegistrationResponse {
   id: number;
@@ -22,50 +22,33 @@ export class RegisterComponent implements OnInit {
   loading = false;
 
   constructor(
-    private fb: FormBuilder,
-    private http: HttpClient,
-    private messageService: MessageService
+    private formBuilder: FormBuilder,
+    private authService: AuthService,
+    private messageService: MessageService,
+    private router: Router
   ) {
-    this.registerForm = this.fb.group({
+    this.registerForm = this.formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [
         Validators.required,
         Validators.minLength(8),
-        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/)
       ]],
       confirmPassword: ['', [Validators.required]]
     });
 
-    // Add password match validator to confirmPassword control
-    const confirmPasswordControl = this.registerForm.get('confirmPassword');
-    if (confirmPasswordControl) {
-      confirmPasswordControl.addValidators(
-        this.passwordMatchValidator(this.registerForm.get('password'))
-      );
-    }
+    // Add password match validation
+    this.registerForm.get('confirmPassword')?.valueChanges.subscribe(() => {
+      this.validatePasswordMatch();
+    });
 
-    // Update confirm password validation when password changes
     this.registerForm.get('password')?.valueChanges.subscribe(() => {
-      this.registerForm.get('confirmPassword')?.updateValueAndValidity();
+      this.validatePasswordMatch();
     });
   }
 
   ngOnInit(): void {}
-
-  // Custom validator for password match
-  private passwordMatchValidator(passwordControl: AbstractControl | null) {
-    return (control: AbstractControl): ValidationErrors | null => {
-      if (!passwordControl) return null;
-      
-      const password = passwordControl.value;
-      const confirmPassword = control.value;
-
-      if (!password || !confirmPassword) return null;
-
-      return password === confirmPassword ? null : { passwordMismatch: true };
-    };
-  }
 
   onSubmit(): void {
     if (this.registerForm.valid) {
@@ -79,47 +62,21 @@ export class RegisterComponent implements OnInit {
         bio: ''
       };
 
-      const headers = new HttpHeaders()
-        .set('Content-Type', 'application/json')
-        .set('Accept', 'application/json');
-
-      this.http.post<RegistrationResponse>(`${environment.apiUrl}/users/register`, payload, { headers })
-        .subscribe({
-          next: (response) => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Registration Successful',
-              detail: `Welcome ${response.username}! Your account has been created successfully.`
-            });
-            this.registerForm.reset();
-            this.loading = false;
-            // Optional: Redirect to login page after successful registration
-            // this.router.navigate(['/auth/login']);
-          },
-          error: (error) => {
-            console.error('Registration error:', error);
-            let errorMessage = 'An error occurred during registration';
-            
-            if (error.status === 409) {
-              errorMessage = 'Username or email already exists';
-            } else if (error.status === 400) {
-              // Handle structured error response
-              errorMessage = error.error.message || error.error || 'Invalid registration data';
-              if (error.error.errors && error.error.errors.length > 0) {
-                errorMessage = error.error.errors.join(', ');
-              }
-            } else if (error.error) {
-              errorMessage = typeof error.error === 'string' ? error.error : error.error.message;
-            }
-
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Registration Failed',
-              detail: errorMessage
-            });
-            this.loading = false;
-          }
-        });
+      this.authService.register(payload).subscribe({
+        next: (response: RegistrationResponse) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Registration Successful',
+            detail: `Welcome ${response.username}! Your account has been created successfully.`
+          });
+          this.registerForm.reset();
+          this.loading = false;
+          this.router.navigate(['/auth/login']);
+        },
+        error: () => {
+          this.loading = false;
+        }
+      });
     } else {
       this.messageService.add({
         severity: 'error',
@@ -166,5 +123,20 @@ export class RegisterComponent implements OnInit {
       return 'Passwords do not match';
     }
     return '';
+  }
+
+  private validatePasswordMatch(): void {
+    const password = this.registerForm.get('password');
+    const confirmPassword = this.registerForm.get('confirmPassword');
+
+    if (password && confirmPassword && password.value && confirmPassword.value) {
+      if (password.value !== confirmPassword.value) {
+        confirmPassword.setErrors({ ...confirmPassword.errors, passwordMismatch: true });
+      } else {
+        const errors = { ...confirmPassword.errors };
+        delete errors['passwordMismatch'];
+        confirmPassword.setErrors(Object.keys(errors).length ? errors : null);
+      }
+    }
   }
 }

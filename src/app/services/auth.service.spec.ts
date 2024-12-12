@@ -1,9 +1,11 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AuthService } from './auth.service';
+import { ErrorService } from './error.service';
 import { environment } from '../../environments/environment';
 import { PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -24,9 +26,11 @@ describe('AuthService', () => {
       imports: [HttpClientTestingModule],
       providers: [
         AuthService,
+        ErrorService,
         { provide: PLATFORM_ID, useValue: 'browser' },
         { provide: Router, useValue: spy },
-        { provide: 'WINDOW', useValue: windowMock }
+        { provide: 'WINDOW', useValue: windowMock },
+        MessageService
       ]
     });
 
@@ -138,6 +142,8 @@ describe('AuthService', () => {
         imports: [HttpClientTestingModule],
         providers: [
           AuthService,
+          ErrorService,
+          MessageService,
           { provide: PLATFORM_ID, useValue: 'browser' },
           { provide: Router, useValue: jasmine.createSpyObj('Router', ['navigate']) },
           { provide: 'WINDOW', useValue: windowMock }

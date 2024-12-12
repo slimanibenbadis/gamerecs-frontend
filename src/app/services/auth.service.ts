@@ -1,10 +1,11 @@
 import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
+import { ErrorService } from './error.service';
 
 interface LoginCredentials {
   username: string;
@@ -33,6 +34,7 @@ export class AuthService {
     private http: HttpClient,
     @Inject(PLATFORM_ID) platformId: Object,
     private router: Router,
+    private errorService: ErrorService,
     @Inject('WINDOW') private window?: Window
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -40,7 +42,10 @@ export class AuthService {
   }
 
   register(data: RegistrationData): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/users/register`, data);
+    return this.http.post(`${environment.apiUrl}/users/register`, data)
+      .pipe(
+        catchError(error => this.errorService.handleError(error))
+      );
   }
 
   login(credentials: LoginCredentials): Observable<LoginResponse> {
@@ -49,7 +54,8 @@ export class AuthService {
         tap(response => {
           this.setToken(response.token);
           this.authStatusSubject.next(true);
-        })
+        }),
+        catchError(error => this.errorService.handleError(error))
       );
   }
 
