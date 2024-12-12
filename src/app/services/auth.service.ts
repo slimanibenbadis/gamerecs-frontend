@@ -4,9 +4,16 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { isPlatformBrowser } from '@angular/common';
+import { Router } from '@angular/router';
 
 interface LoginCredentials {
   username: string;
+  password: string;
+}
+
+interface RegistrationData {
+  username: string;
+  email: string;
   password: string;
 }
 
@@ -24,14 +31,18 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    @Inject(PLATFORM_ID) platformId: Object
+    @Inject(PLATFORM_ID) platformId: Object,
+    private router: Router
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
     this.authStatusSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
   }
 
+  register(data: RegistrationData): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/users/register`, data);
+  }
+
   login(credentials: LoginCredentials): Observable<LoginResponse> {
-    
     return this.http.post<LoginResponse>(`${environment.apiUrl}/users/login`, credentials)
       .pipe(
         tap(response => {
@@ -46,10 +57,11 @@ export class AuthService {
       localStorage.removeItem(this.TOKEN_KEY);
     }
     this.authStatusSubject.next(false);
+    this.router.navigate(['/auth/login']);
   }
 
   isAuthenticated(): boolean {
-    return !!this.getToken();
+    return this.getToken() !== null && !this.isTokenExpired();
   }
 
   getToken(): string | null {
@@ -67,5 +79,43 @@ export class AuthService {
 
   getAuthStatus(): Observable<boolean> {
     return this.authStatusSubject.asObservable();
+  }
+
+  isTokenExpired(): boolean {
+    const token = this.getToken();
+    if (!token) return true;
+
+    try {
+      const tokenParts = token.split('.');
+      if (tokenParts.length !== 3) return true;
+
+      const payload = JSON.parse(atob(tokenParts[1]));
+      if (!payload || typeof payload.exp !== 'number') {
+        return true;
+      }
+      
+      const expirationTime = payload.exp * 1000; // Convert to milliseconds
+      const currentTime = Date.now();
+      return (currentTime + 1000) >= expirationTime;
+    } catch {
+      return true;
+    }
+  }
+
+  isValidToken(): boolean {
+    const token = this.getToken();
+    if (!token) return false;
+
+    try {
+      const tokenParts = token.split('.');
+      if (tokenParts.length !== 3) return false;
+
+      const payload = JSON.parse(atob(tokenParts[1]));
+      return !!payload && 
+             typeof payload.exp === 'number' && 
+             payload.exp > (Date.now() / 1000); // Compare with current time in seconds
+    } catch {
+      return false;
+    }
   }
 } 
