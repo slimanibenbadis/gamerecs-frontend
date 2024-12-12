@@ -32,7 +32,8 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) platformId: Object,
-    private router: Router
+    private router: Router,
+    @Inject('WINDOW') private window?: Window
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
     this.authStatusSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
@@ -57,7 +58,11 @@ export class AuthService {
       localStorage.removeItem(this.TOKEN_KEY);
     }
     this.authStatusSubject.next(false);
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/auth/login']).then(() => {
+      if (this.isBrowser && this.window && !(this.window as any).isTestEnvironment) {
+        this.window.location.reload();
+      }
+    });
   }
 
   isAuthenticated(): boolean {

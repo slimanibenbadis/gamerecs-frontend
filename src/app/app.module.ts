@@ -1,7 +1,8 @@
-import { NgModule } from '@angular/core';
+import { NgModule, PLATFORM_ID, Inject } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
+import { isPlatformBrowser } from '@angular/common';
 import Aura from '@primeng/themes/aura';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -20,6 +21,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AuthModule } from './components/auth/auth.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
+
+export function windowFactory(platformId: Object): Window | undefined {
+  if (isPlatformBrowser(platformId)) {
+    return window;
+  }
+  return undefined;
+}
 
 @NgModule({
   declarations: [
@@ -57,7 +65,12 @@ import { HomeComponent } from './components/home/home.component';
         }
       }
     }),
-    MessageService
+    MessageService,
+    {
+      provide: 'WINDOW',
+      useFactory: windowFactory,
+      deps: [PLATFORM_ID]
+    }
   ],
   bootstrap: [AppComponent]
 })

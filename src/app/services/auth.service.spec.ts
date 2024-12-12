@@ -9,15 +9,24 @@ describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
   let routerSpy: jasmine.SpyObj<Router>;
+  let windowMock: any;
 
   beforeEach(() => {
     const spy = jasmine.createSpyObj('Router', ['navigate']);
+    spy.navigate.and.returnValue(Promise.resolve(true));
+    
+    windowMock = {
+      location: { reload: jasmine.createSpy('reload') },
+      isTestEnvironment: true
+    };
+
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
         AuthService,
         { provide: PLATFORM_ID, useValue: 'browser' },
-        { provide: Router, useValue: spy }
+        { provide: Router, useValue: spy },
+        { provide: 'WINDOW', useValue: windowMock }
       ]
     });
 
@@ -130,7 +139,8 @@ describe('AuthService', () => {
         providers: [
           AuthService,
           { provide: PLATFORM_ID, useValue: 'browser' },
-          { provide: Router, useValue: jasmine.createSpyObj('Router', ['navigate']) }
+          { provide: Router, useValue: jasmine.createSpyObj('Router', ['navigate']) },
+          { provide: 'WINDOW', useValue: windowMock }
         ]
       });
 
