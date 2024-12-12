@@ -10,6 +10,7 @@ import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { AuthNavComponent } from '../auth-nav/auth-nav.component';
+import { SharedModule } from '../../../shared/shared.module';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -30,7 +31,8 @@ describe('LoginComponent', () => {
         InputTextModule,
         PasswordModule,
         ButtonModule,
-        ToastModule
+        ToastModule,
+        SharedModule
       ],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },

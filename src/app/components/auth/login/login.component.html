@@ -31,9 +31,11 @@
             />
           </span>
         </div>
-        <small id="username-error" class="text-red-500 dark:text-red-400" *ngIf="isFieldInvalid('username')">
-          {{ getErrorMessage('username') }}
-        </small>
+        <app-error-message
+          id="username-error"
+          [show]="isFieldInvalid('username')"
+          [message]="getErrorMessage('username')"
+        ></app-error-message>
       </div>
 
       <!-- Password Field -->
@@ -53,9 +55,11 @@
             aria-describedby="password-error"
           ></p-password>
         </div>
-        <small class="text-red-500" *ngIf="isFieldInvalid('password')">
-          {{ getErrorMessage('password') }}
-        </small>
+        <app-error-message
+          id="password-error"
+          [show]="isFieldInvalid('password')"
+          [message]="getErrorMessage('password')"
+        ></app-error-message>
       </div>
 
       <!-- Submit Button -->

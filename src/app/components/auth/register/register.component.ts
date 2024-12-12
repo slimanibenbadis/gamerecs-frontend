@@ -73,8 +73,23 @@ export class RegisterComponent implements OnInit {
           this.loading = false;
           this.router.navigate(['/auth/login']);
         },
-        error: () => {
+        error: (error) => {
           this.loading = false;
+          let errorMessage = 'An unexpected error occurred during registration';
+          
+          if (error.error?.message) {
+            errorMessage = error.error.message;
+          } else if (error.error?.errors) {
+            errorMessage = Object.values(error.error.errors).join(', ');
+          }
+          
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Registration Failed',
+            detail: errorMessage,
+            life: 5000
+          });
+
         }
       });
     } else {
@@ -121,6 +136,9 @@ export class RegisterComponent implements OnInit {
     }
     if (control.hasError('passwordMismatch')) {
       return 'Passwords do not match';
+    }
+    if (control.hasError('serverError')) {
+      return `This ${fieldName} is already registered`;
     }
     return '';
   }

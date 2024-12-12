@@ -8,7 +8,11 @@ import { Router } from '@angular/router';
 export class AuthNavComponent {
   constructor(private router: Router) {}
 
-  isLoginRoute(): boolean {
+  isLoginPage(): boolean {
     return this.router.url === '/auth/login';
+  }
+
+  isRegisterPage(): boolean {
+    return this.router.url === '/auth/register';
   }
 } 

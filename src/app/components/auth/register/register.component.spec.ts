@@ -13,6 +13,7 @@ import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services/auth.service';
 import { ErrorService } from '../../../services/error.service';
 import { PLATFORM_ID } from '@angular/core';
+import { SharedModule } from '../../../shared/shared.module';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
@@ -39,7 +40,8 @@ describe('RegisterComponent', () => {
         ButtonModule,
         InputTextModule,
         PasswordModule,
-        ToastModule
+        ToastModule,
+        SharedModule
       ],
       providers: [
         FormBuilder,

@@ -27,12 +27,15 @@
               [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('username')}"
               class="w-full pl-10 dark:bg-gray-800 dark:text-white dark:border-gray-600"
               placeholder="Choose a username"
+              aria-describedby="username-error"
             />
           </span>
         </div>
-        <small class="text-red-500 dark:text-red-400" *ngIf="isFieldInvalid('username')">
-          {{ getErrorMessage('username') }}
-        </small>
+        <app-error-message
+          id="username-error"
+          [show]="isFieldInvalid('username')"
+          [message]="getErrorMessage('username')"
+        ></app-error-message>
       </div>
 
       <!-- Email Field -->
@@ -49,12 +52,15 @@
               [ngClass]="{'ng-invalid ng-dirty': isFieldInvalid('email')}"
               class="w-full pl-10 dark:bg-gray-800 dark:text-white dark:border-gray-600"
               placeholder="Enter your email"
+              aria-describedby="email-error"
             />
           </span>
         </div>
-        <small class="text-red-500 dark:text-red-400" *ngIf="isFieldInvalid('email')">
-          {{ getErrorMessage('email') }}
-        </small>
+        <app-error-message
+          id="email-error"
+          [show]="isFieldInvalid('email')"
+          [message]="getErrorMessage('email')"
+        ></app-error-message>
       </div>
 
       <!-- Password Field -->
@@ -71,11 +77,14 @@
             inputStyleClass="w-full dark:bg-gray-700 dark:text-white dark:border-gray-600"
             placeholder="Create a strong password"
             [inputStyle]="{'width': '100%'}"
+            aria-describedby="password-error"
           ></p-password>
         </div>
-        <small class="text-red-500" *ngIf="isFieldInvalid('password')">
-          {{ getErrorMessage('password') }}
-        </small>
+        <app-error-message
+          id="password-error"
+          [show]="isFieldInvalid('password')"
+          [message]="getErrorMessage('password')"
+        ></app-error-message>
       </div>
 
       <!-- Confirm Password Field -->
@@ -92,11 +101,14 @@
             inputStyleClass="w-full dark:bg-gray-700 dark:text-white dark:border-gray-600"
             placeholder="Confirm your password"
             [inputStyle]="{'width': '100%'}"
+            aria-describedby="confirm-password-error"
           ></p-password>
         </div>
-        <small class="text-red-500" *ngIf="isFieldInvalid('confirmPassword')">
-          {{ getErrorMessage('confirmPassword') }}
-        </small>
+        <app-error-message
+          id="confirm-password-error"
+          [show]="isFieldInvalid('confirmPassword')"
+          [message]="getErrorMessage('confirmPassword')"
+        ></app-error-message>
       </div>
 
       <!-- Submit Button -->

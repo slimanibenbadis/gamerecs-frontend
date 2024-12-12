@@ -1,15 +1,19 @@
-<div class="flex justify-center space-x-4 mb-8">
-  <button 
-    pButton 
-    [ngClass]="{'p-button-outlined': !isLoginRoute()}"
-    label="Sign In" 
-    routerLink="/auth/login"
-  ></button>
-  <button 
-    pButton 
-    [ngClass]="{'p-button-outlined': isLoginRoute()}"
-    label="Create Account" 
-    styleClass="p-button-secondary" 
-    [routerLink]="['/register']"
-  ></button>
+<div class="flex justify-center space-x-4">
+  <a 
+    [routerLink]="['/auth/login']" 
+    routerLinkActive="text-primary-600 dark:text-primary-400"
+    [class.text-gray-500]="!isLoginPage()"
+    class="text-sm font-medium hover:text-primary-500 dark:hover:text-primary-300"
+  >
+    Sign In
+  </a>
+  <span class="text-gray-400">|</span>
+  <a 
+    [routerLink]="['/auth/register']"
+    routerLinkActive="text-primary-600 dark:text-primary-400"
+    [class.text-gray-500]="!isRegisterPage()"
+    class="text-sm font-medium hover:text-primary-500 dark:hover:text-primary-300"
+  >
+    Create Account
+  </a>
 </div> 
