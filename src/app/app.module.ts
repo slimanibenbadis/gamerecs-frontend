@@ -6,7 +6,7 @@ import { isPlatformBrowser } from '@angular/common';
 import Aura from '@primeng/themes/aura';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 
 // PrimeNG Modules
 import { ButtonModule } from 'primeng/button';
@@ -21,6 +21,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AuthModule } from './components/auth/auth.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
+import { httpErrorInterceptor } from './interceptors/http-error.interceptor';
 
 export function windowFactory(platformId: Object): Window | undefined {
   if (isPlatformBrowser(platformId)) {
@@ -52,7 +53,10 @@ export function windowFactory(platformId: Object): Window | undefined {
   providers: [
     provideClientHydration(),
     provideAnimationsAsync(),
-    provideHttpClient(withFetch()),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([httpErrorInterceptor])
+    ),
     providePrimeNG({
       theme: {
         preset: Aura,
@@ -60,7 +64,9 @@ export function windowFactory(platformId: Object): Window | undefined {
           ripple: true,
           cssLayer: {
             name: 'primeng',
-            order: 'tailwind-base, primeng, tailwind-utilities'
+            options: {
+              order: 'tailwind-base, primeng, tailwind-utilities'
+            }
           }
         }
       }
